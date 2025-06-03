@@ -8,6 +8,13 @@ int main() {
 
     while (hpWindowIsOpen(window)) {
         hpReadEvents();
+        int width, height;
+        hpWindowGetSize(window, &width, &height);
+
+        printf("Window Size: {%i, %i}\n", width, height);
+
+        hpWindowGetFramebufferSize(window, &width, &height);
+        printf("Framebuffer size: {%i, %i}\n", width, height);
     }
 
     hpDestroyWindow(window);

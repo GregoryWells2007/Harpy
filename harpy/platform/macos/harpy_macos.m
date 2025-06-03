@@ -68,3 +68,15 @@ void hpDestroyWindow(hpWindow window) {
     [window->window close];
     [window->window release];
 }
+
+void hpWindowGetSize(hpWindow window, int* width, int* height) {
+    *width = window->window.frame.size.width;
+    *height = window->window.frame.size.height;
+}
+
+void hpWindowGetFramebufferSize(hpWindow window, int* width, int* height) {
+    CGFloat scale = [window->window backingScaleFactor];
+    NSRect frame = [window->window frame];
+    *width = frame.size.width * scale;
+    *height = frame.size.height * scale;
+}
