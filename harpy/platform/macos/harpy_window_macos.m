@@ -38,15 +38,55 @@ hpWindow hpCreateWindow(int width, int height, const char* name) {
         defer:NO
     ];
 
+    // window->ns.view = [[GLFWContentView alloc] initWithGlfwWindow:window];
+    // window->ns.scaleFramebuffer = wndconfig->scaleFramebuffer;
+
+    // if (fbconfig->transparent)
+    // {
+    //     [window->ns.object setOpaque:NO];
+    //     [window->ns.object setHasShadow:NO];
+    //     [window->ns.object setBackgroundColor:[NSColor clearColor]];
+    // }
+
+    // [window->ns.object setContentView:window->ns.view];
+    // [window->ns.object makeFirstResponder:window->ns.view];
+
     [window->window setTitle:@"This is a test window name"];
     [window->window setDelegate:window->delegate];
     [window->window setAcceptsMouseMovedEvents:YES];
     [window->window setRestorable:NO];
+
+    @autoreleasepool {
+    [window->window orderFront:nil];
+    } // autoreleasepool
+
+    window->open = YES;
     return window;
 }
 
 void hpReadEvents() {
+    @autoreleasepool {
+    for (;;)
+    {
+        NSEvent* event = [NSApp nextEventMatchingMask:NSEventMaskAny
+                                            untilDate:[NSDate distantPast]
+                                               inMode:NSEventTrackingRunLoopMode
+                                              dequeue:YES];
+        if (event == nil)
+            break;
 
+        [NSApp sendEvent:event];
+    }
+    NSEvent* event = [NSApp nextEventMatchingMask:NSEventMaskAny
+                                        untilDate:[NSDate distantPast]
+                                           inMode:NSDefaultRunLoopMode
+                                          dequeue:YES];
+    if (event)
+        [NSApp sendEvent:event];
+
+    [NSApp updateWindows];
+
+    } // autoreleasepool
 }
 
 int hpWindowIsOpen(hpWindow window) {

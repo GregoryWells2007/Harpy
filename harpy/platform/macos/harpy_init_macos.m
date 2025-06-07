@@ -1,33 +1,41 @@
 #include "harpy_init.h"
 #import "AppKit/AppKit.h"
 
-@interface HarpyHelper : NSObject
+@interface HarpyApplicationDelegate : NSObject <NSApplicationDelegate>
 @end
 
-@implementation HarpyHelper
+@implementation HarpyApplicationDelegate
+@end
 
-- (void)doNothing:(id)object
-{
-}
 
-@end // GLFWHelper
+typedef struct hpInstance {
+    HarpyApplicationDelegate* delegate;
+    CGEventSourceRef event_source;
+} hpInstance_t;
+hpInstance_t* instance;
+
 
 void hpInit() {
+    if (instance != NULL) return;
+    instance = malloc(sizeof(hpInstance_t));
 
-    HarpyHelper* harpy = [[HarpyHelper alloc] init];
-
-@autoreleasepool {
-
+    @autoreleasepool {
     [NSApplication sharedApplication];
-    // if (![[NSRunningApplication currentApplication] isFinishedLaunching])
-    //     [NSApp run];
 
-    NSEvent* (^block)(NSEvent*) = ^ NSEvent* (NSEvent* event)
-    {
+    instance->delegate = [[HarpyApplicationDelegate alloc] init];
+    [NSApp setDelegate:instance->delegate];
+
+    [NSApp setActivationPolicy:NSApplicationActivationPolicyRegular];
+    [NSApp finishLaunching];
+    [NSApp activateIgnoringOtherApps:YES];
+
+    NSEvent* (^block)(NSEvent*) = ^ NSEvent* (NSEvent* event) {
         if ([event modifierFlags] & NSEventModifierFlagCommand)
             [[NSApp keyWindow] sendEvent:event];
-
         return event;
     };
-}
+
+    instance->event_source = CGEventSourceCreate(kCGEventSourceStateHIDSystemState);
+    CGEventSourceSetLocalEventsSuppressionInterval(instance->event_source, 0.0);
+    }
 }
