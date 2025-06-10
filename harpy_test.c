@@ -14,4 +14,5 @@ int main() {
     }
 
     hpDestroyWindow(window);
+    hpClose();
 }

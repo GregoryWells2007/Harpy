@@ -16,6 +16,9 @@ add_executable(Harpy ${SOURCE_FILES} ${PLATFORM_FILES} harpy_test.c)
 if (APPLE)
     target_link_libraries(Harpy "-framework Cocoa")
 endif()
+if (UNIX AND NOT APPLE)
+    target_link_libraries(Harpy "X11")
+endif()
 
 
 target_include_directories(Harpy PUBLIC ${CMAKE_SOURCE_DIR}/harpy/src/)
