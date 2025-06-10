@@ -1,6 +1,14 @@
 #pragma once
+#include "harpy_types.h"
 typedef struct hpWindow_t* hpWindow;
-hpWindow hpCreateWindow(int width, int height, const char* name);
+
+typedef struct hpWindowProperties {
+    hpBool resizable;
+} hpWindowProperties;
+
+hpWindow hpCreateWindowWithProperties(int width, int height, const char* name, hpWindowProperties properties);
+static inline hpWindow hpCreateWindow(int width, int height, const char* name) { return hpCreateWindowWithProperties(width, height, name, (hpWindowProperties){HP_TRUE}); }
+
 int hpWindowIsOpen(hpWindow window);
 void hpDestroyWindow(hpWindow window);
 void hpCloseWindow(hpWindow window);

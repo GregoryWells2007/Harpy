@@ -11,7 +11,7 @@ static void hpX11DestroyInputContext(XIC ic, XPointer clientData, XPointer callD
     window->inputContext = NULL;
 }
 
-hpWindow hpCreateWindow(int width, int height, const char* name) {
+hpWindow hpCreateWindowWithProperties(int width, int height, const char* name, hpWindowProperties properties) {
     hpX11Data* data = hpX11GetData();
 
     hpWindow window = malloc(sizeof(struct hpWindow_t));
@@ -22,6 +22,16 @@ hpWindow hpCreateWindow(int width, int height, const char* name) {
 	0, 0x00000000,	0x00000000);
     XStoreName(data->display, window->window, name);
     XSelectInput(data->display, window->window, KeyPressMask|KeyReleaseMask);
+
+    if (!properties.resizable) {
+        XSizeHints *size_hints = XAllocSizeHints();
+        size_hints->flags = PMinSize | PMaxSize;
+        size_hints->min_width = size_hints->max_width = width;
+        size_hints->min_height = size_hints->max_height = height;
+        XSetWMNormalHints(data->display, window->window, size_hints);
+        XFree(size_hints);
+    }
+
     XMapWindow(data->display, window->window);
     window->open = true;
 

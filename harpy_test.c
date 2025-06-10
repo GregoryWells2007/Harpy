@@ -1,18 +1,19 @@
 #include <harpy/harpy.h>
-#include "stdio.h"
-#include "stdlib.h"
+// #include "stdio.h"
+// #include "stdlib.h"
 
-hpWindow window, otherWindow;
+hpWindow window;
 
 int main() {
     hpInit();
-    window = hpCreateWindow(640, 360, "Harpy window");
-    otherWindow = hpCreateWindow(100, 100, "Other window");
 
-    while (hpWindowIsOpen(window)) {
+    hpWindowProperties props = {
+        .resizable = HP_FALSE
+    };
+    window = hpCreateWindowWithProperties(640, 360, "Harpy window", props);
+
+    while (hpWindowIsOpen(window))
         hpReadEvents();
-        // printf("Updating: %i\n", rand());
-    }
 
     hpDestroyWindow(window);
     hpClose();
