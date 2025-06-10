@@ -91,6 +91,7 @@ int hpWindowIsOpen(hpWindow window) {
 void hpDestroyWindow(hpWindow window) {
     [window->window close];
     [window->window release];
+    free(window);
 }
 
 void hpWindowGetSize(hpWindow window, int* width, int* height) {
